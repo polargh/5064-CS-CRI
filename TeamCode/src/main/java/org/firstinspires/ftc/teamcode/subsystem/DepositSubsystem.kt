@@ -74,6 +74,8 @@ class DepositSubsystem(val robot: Bluey): WSubsystem() {
 
         lastClawState = ClawState.BOTH_OPEN
         lastV4BState = V4BState.INTERMEDIATE
+
+        targetPosition = liftAtBottom
     }
 
     override fun periodic() {

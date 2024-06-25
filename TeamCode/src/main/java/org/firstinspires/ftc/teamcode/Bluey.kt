@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
+import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.HardwareMap
-import com.qualcomm.robotcore.robot.Robot
+import com.qualcomm.robotcore.hardware.configuration.LynxConstants
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.pedro.localization.Pose
 import org.firstinspires.ftc.teamcode.subsystem.DepositSubsystem
+import org.firstinspires.ftc.teamcode.subsystem.DroneSubsystem
 import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem
 import org.firstinspires.ftc.teamcode.util.Alliance
 import org.firstinspires.ftc.teamcode.util.OpModeType
@@ -39,21 +41,37 @@ class Bluey(
         Alliance.BLUE -> -Math.PI / 2.0
     }
 
+    var allHubs: List<LynxModule> = listOf()
+    lateinit var controlHub: LynxModule
+
     val telemetry: MultipleTelemetry = MultipleTelemetry(t, FtcDashboard.getInstance().telemetry)
 
     lateinit var depositSubsystem: DepositSubsystem
     lateinit var intakeSubsystem: IntakeSubsystem
+    lateinit var droneSubsystem: DroneSubsystem
 
     fun init() {
         instance = this
 
+        allHubs = hardwareMap.getAll(LynxModule::class.java)
+
+        allHubs.forEach { hub ->
+            hub.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
+
+            if (hub.isParent && LynxConstants.isEmbeddedSerialNumber(hub.serialNumber)) {
+                controlHub = hub
+            }
+        }
+
         depositSubsystem = DepositSubsystem(this)
+        droneSubsystem = DroneSubsystem(this)
         intakeSubsystem = IntakeSubsystem(this)
     }
 
     fun loop() {
         depositSubsystem.periodic()
         intakeSubsystem.periodic()
+        droneSubsystem.periodic()
     }
 
     fun write() {}
@@ -61,6 +79,10 @@ class Bluey(
     fun read() {
         depositSubsystem.read()
         intakeSubsystem.read()
+    }
+
+    fun clearBulkCache() {
+        controlHub.clearBulkCache()
     }
 
     fun reset() {

@@ -18,4 +18,7 @@ object ServoConstants {
     var v4bPitchIntermediate = 0.0
     var v4bPitchDepositing = 0.0
     var v4bPitchPlacingPurple = 0.0
+
+    var droneIdle = 0.0
+    var droneLaunched = 0.0
 }
