@@ -55,6 +55,8 @@ class TeleOp: CommandOpMode() {
 
         driveVector = Vector()
         headingVector = Vector()
+
+        waitForStart()
     }
 
     override fun run() {
