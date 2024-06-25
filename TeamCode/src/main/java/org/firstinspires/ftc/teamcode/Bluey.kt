@@ -3,9 +3,12 @@ package org.firstinspires.ftc.teamcode
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.qualcomm.hardware.lynx.LynxModule
+import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.configuration.LynxConstants
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.pedro.follower.Follower
 import org.firstinspires.ftc.teamcode.pedro.localization.Pose
 import org.firstinspires.ftc.teamcode.subsystem.DepositSubsystem
 import org.firstinspires.ftc.teamcode.subsystem.DroneSubsystem
@@ -50,6 +53,8 @@ class Bluey(
     lateinit var intakeSubsystem: IntakeSubsystem
     lateinit var droneSubsystem: DroneSubsystem
 
+    lateinit var follower: Follower
+
     fun init() {
         instance = this
 
@@ -62,6 +67,10 @@ class Bluey(
                 controlHub = hub
             }
         }
+
+        val auto = opModeType == OpModeType.AUTO
+
+        follower = Follower(hardwareMap, auto)
 
         depositSubsystem = DepositSubsystem(this)
         droneSubsystem = DroneSubsystem(this)
@@ -89,4 +98,6 @@ class Bluey(
         depositSubsystem.reset()
         intakeSubsystem.reset()
     }
+
+    private fun motor(name: String): DcMotorEx = hardwareMap.get(DcMotorEx::class.java, name)
 }

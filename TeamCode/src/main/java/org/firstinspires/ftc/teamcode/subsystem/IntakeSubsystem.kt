@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystem
 
+import com.acmerobotics.dashboard.config.Config
 import com.arcrobotics.ftclib.controller.PIDFController
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Bluey
 import org.firstinspires.ftc.teamcode.util.WSubsystem
 import kotlin.math.abs
 
+@Config
 class IntakeSubsystem(val robot: Bluey): WSubsystem() {
     private var leftExtendoMotor: DcMotorEx
     private var rightExtendoMotor: DcMotorEx

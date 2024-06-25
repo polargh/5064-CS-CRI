@@ -50,6 +50,8 @@ class DepositSubsystem(val robot: Bluey): WSubsystem() {
 
     var liftAtBottom: Double = 0.0
 
+    var isCurrentlyRetracting = false
+
     init {
         leftLiftMotor = motor("leftLiftMotor")
         rightLiftMotor = motor("rightLiftMotor")
@@ -96,6 +98,14 @@ class DepositSubsystem(val robot: Bluey): WSubsystem() {
 
     override fun read() {
         lastPosition = abs(liftEncoder.position).toDouble()
+    }
+
+    fun isLiftAtBottom(): Boolean {
+        if (lastPosition == liftAtBottom) {
+            return true
+        } else {
+            return false
+        }
     }
 
     override fun write() {}
@@ -171,7 +181,7 @@ class DepositSubsystem(val robot: Bluey): WSubsystem() {
         targetPosition = liftAtBottom
     }
 
-    fun update(state: V4BState) {
+    fun updatePosition(state: V4BState) {
         when (state) {
             V4BState.AWAITING_TRANSFER -> {
                 v4bLeft.position = ServoConstants.v4bAwaitingTransfer
@@ -196,6 +206,26 @@ class DepositSubsystem(val robot: Bluey): WSubsystem() {
             V4BState.PLACING_PURPLE -> {
                 v4bLeft.position = ServoConstants.v4bPlacingPurple
                 v4bRight.position = ServoConstants.v4bPlacingPurple
+                v4bPitch.position = ServoConstants.v4bPitchPlacingPurple
+            }
+        }
+    }
+
+    fun updatePitch(state: V4BState) {
+        when (state) {
+            V4BState.AWAITING_TRANSFER -> {
+                v4bPitch.position = ServoConstants.v4bPitchAwaitingTransfer
+            }
+            V4BState.TRANSFERRING -> {
+                v4bPitch.position = ServoConstants.v4bPitchTransferring
+            }
+            V4BState.INTERMEDIATE -> {
+                v4bPitch.position = ServoConstants.v4bPitchIntermediate
+            }
+            V4BState.DEPOSITING -> {
+                v4bPitch.position = ServoConstants.v4bPitchDepositing
+            }
+            V4BState.PLACING_PURPLE -> {
                 v4bPitch.position = ServoConstants.v4bPitchPlacingPurple
             }
         }
